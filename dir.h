@@ -45,6 +45,7 @@ public:
 signals:
     void open(Dir*);
     void del(QString dir);
+    void upDate(QString dir);
 
 public slots:
     void pressOpen();

@@ -31,9 +31,11 @@ MainWindow::MainWindow(QWidget *parent) :
     for(int i=0; i < root->dirList->size(); i++){
         connect(root->dirList->at(i), SIGNAL(open(Dir*)), this, SLOT(setdir(Dir*)));
     }
+    connect(root, SIGNAL(upDate(QString)), this, SLOT(update(QString)));
     scroll->setMinimumWidth(500);
     scroll->setWidget(root);
     connect(backButton, SIGNAL(clicked(bool)), this, SLOT(back()));
+    connect(beginButton, SIGNAL(clicked(bool)), this, SLOT(toRoot()));
 }
 
 MainWindow::~MainWindow()
@@ -49,6 +51,7 @@ void MainWindow::setdir(Dir *dir)
     for(int i=0; i < currentDir->dirList->size(); i++){
         connect(currentDir->dirList->at(i), SIGNAL(open(Dir*)), this, SLOT(setdir(Dir*)));
     }
+    connect(currentDir, SIGNAL(update(QString)), this, SLOT(update(QString)));
 }
 
 void MainWindow::back()
@@ -59,4 +62,44 @@ void MainWindow::back()
     scroll->takeWidget();
     scroll->setWidget(currentDir->getPrev());
     currentDir = currentDir->getPrev();
+    update(currentDir->getAbsolutePath());
+}
+
+void MainWindow::update(QString dir)
+{
+    scroll->takeWidget();
+    currentDir->destroyIN();
+    currentDir = currentDir->getPrev();
+    currentDir->destroyIN();
+    currentDir->initIn();
+    for(int i = 0; i<currentDir->dirList->size(); i++){
+        if(currentDir->dirList->at(i)->getAbsolutePath() == dir){
+            currentDir = currentDir->dirList->at(i);
+            currentDir->initIn();
+            break;
+        }
+    }
+    for(int i=0; i < currentDir->dirList->size(); i++){
+        connect(currentDir->dirList->at(i), SIGNAL(open(Dir*)), this, SLOT(setdir(Dir*)));
+    }
+    connect(currentDir, SIGNAL(update(QString)), this, SLOT(update(QString)));
+    scroll->setWidget(currentDir);
+}
+
+void MainWindow::toRoot()
+{
+    scroll->takeWidget();
+    while (currentDir != NULL){
+        currentDir->destroyIN();
+        currentDir = currentDir->getPrev();
+    }
+    root = NULL;
+    root = new Dir("", "/", NULL);
+    currentDir = root;
+    root->initIn();
+    for(int i=0; i < root->dirList->size(); i++){
+        connect(root->dirList->at(i), SIGNAL(open(Dir*)), this, SLOT(setdir(Dir*)));
+    }
+    connect(root, SIGNAL(upDate(QString)), this, SLOT(update(QString)));
+    scroll->setWidget(root);
 }

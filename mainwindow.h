@@ -27,7 +27,8 @@ public:
 public slots:
     void setdir(Dir* dir);
     void back();
-
+    void update(QString dir);
+    void toRoot();
 private:
     Ui::MainWindow *ui;
 };

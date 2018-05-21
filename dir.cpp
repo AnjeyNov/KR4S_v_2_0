@@ -22,6 +22,8 @@ void Dir::setAbsolutePath(QString value)
 
 void Dir::initIn()
 {
+    inLay = new QVBoxLayout();
+    this->setLayout(inLay);
     QDir dir(*absolutePath);
     QStringList dirSL(dir.entryList(QDir::Dirs));
     dirList = new QList<Dir*>;
@@ -44,10 +46,13 @@ void Dir::destroyIN()
 {
     for (int i = 0; i < inLay->count();){
         QLayoutItem *item = inLay->itemAt(i);
-        if (item->layout() != NULL)
+        if (item->layout() != NULL){
             delete inLay->takeAt(i);
+        }
         else i++;
     }
+    delete inLay;
+    this->layout()->update();
     while(!dirList->empty()){
         dirList->pop_back();
     }
@@ -94,8 +99,7 @@ Dir::Dir(QString name, QString absolutePath, Dir *prev, QWidget *parent) : QWidg
     this->deleteButton = new QPushButton("Delete");
     this->outLay->addWidget(deleteButton);
 
-    inLay = new QVBoxLayout();
-    this->setLayout(inLay);
+
 
     connect(openButton, SIGNAL(clicked(bool)), this, SLOT(pressOpen()));
     connect(deleteButton,SIGNAL(clicked(bool)), this, SLOT(pressDelete()));
@@ -118,7 +122,5 @@ void Dir::goDel(QString dir)
     DeleteDir *del = new DeleteDir(dir);
     del->run();
     del->wait();
-    this->destroyIN();
-    this->initIn();
-
+    emit upDate(this->getAbsolutePath());
 }
