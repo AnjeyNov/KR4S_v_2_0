@@ -131,5 +131,5 @@ void Dir::goDelFile(QString file)
     DeleteFile *thr = new DeleteFile(file);
     thr->run();
     thr->wait();
-    emit upDate(this->absolutePath);
+    emit upDate(this->getAbsolutePath());
 }

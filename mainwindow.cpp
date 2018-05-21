@@ -51,7 +51,7 @@ void MainWindow::setdir(Dir *dir)
     for(int i=0; i < currentDir->dirList->size(); i++){
         connect(currentDir->dirList->at(i), SIGNAL(open(Dir*)), this, SLOT(setdir(Dir*)));
     }
-    connect(currentDir, SIGNAL(update(QString)), this, SLOT(update(QString)));
+    connect(currentDir, SIGNAL(upDate(QString)), this, SLOT(update(QString)));
 }
 
 void MainWindow::back()
@@ -82,7 +82,7 @@ void MainWindow::update(QString dir)
     for(int i=0; i < currentDir->dirList->size(); i++){
         connect(currentDir->dirList->at(i), SIGNAL(open(Dir*)), this, SLOT(setdir(Dir*)));
     }
-    connect(currentDir, SIGNAL(update(QString)), this, SLOT(update(QString)));
+    connect(currentDir, SIGNAL(upDate(QString)), this, SLOT(update(QString)));
     scroll->setWidget(currentDir);
 }
 
