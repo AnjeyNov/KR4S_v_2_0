@@ -8,6 +8,7 @@
 
 class File : public QWidget
 {
+    Q_OBJECT
     QString *name;
     QString *absolutePath;
     QHBoxLayout *outLay;
@@ -18,6 +19,12 @@ public:
     explicit File(QString name, QString absolutePath ,QWidget *parent=0);
     QHBoxLayout *getOutLay() const;
     void setOutLay(QHBoxLayout *value);
+
+signals:
+    void del(QString file);
+
+public slots:
+    void pressDel();
 };
 
 #endif // FILE_H

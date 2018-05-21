@@ -10,6 +10,11 @@ void File::setOutLay(QHBoxLayout *value)
     outLay = value;
 }
 
+void File::pressDel()
+{
+    emit del(*absolutePath);
+}
+
 File::File(QString name, QString absolutePath, QWidget *parent) : QWidget(parent)
 {
     this->name = new QString(name);
@@ -23,4 +28,7 @@ File::File(QString name, QString absolutePath, QWidget *parent) : QWidget(parent
     this->outLay->addWidget(copyButton);
     this->deleteButton = new QPushButton("Delete");
     this->outLay->addWidget(deleteButton);
+
+    connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(pressDel()));
 }
+

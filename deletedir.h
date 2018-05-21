@@ -8,6 +8,7 @@
 
 class DeleteDir : public QThread
 {
+    Q_OBJECT
     QString strdir;
 public:
     explicit DeleteDir(QString dir, QThread *parent = 0);

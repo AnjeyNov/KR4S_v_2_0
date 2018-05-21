@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include "deletedir.h"
+#include "deletefile.h"
 
 
 class Dir : public QWidget
@@ -50,7 +51,8 @@ signals:
 public slots:
     void pressOpen();
     void pressDelete();
-    void goDel(QString dir);
+    void goDelDir(QString dir);
+    void goDelFile(QString file);
 };
 
 #endif // DIR_H

@@ -31,7 +31,7 @@ void Dir::initIn()
         Dir *tmp = new Dir(dirSL.at(i), *absolutePath +"/" + dirSL.at(i), this);
         inLay->addLayout(tmp->getOutLay());
         dirList->append(tmp);
-        connect(tmp, SIGNAL(del(QString)), this, SLOT(goDel(QString)));
+        connect(tmp, SIGNAL(del(QString)), this, SLOT(goDelDir(QString)));
     }
     QStringList fileSL(dir.entryList(QDir::Files));
     fileList = new QList<File*>;
@@ -39,6 +39,7 @@ void Dir::initIn()
         File *tmp = new File(fileSL.at(i), *absolutePath +"/" + fileSL.at(i));
         inLay->addLayout(tmp->getOutLay());
         fileList->append(tmp);
+        connect(tmp, SIGNAL(del(QString)), this, SLOT(goDelFile(QString)));
     }
 }
 
@@ -117,10 +118,18 @@ void Dir::pressDelete()
     emit del(this->getAbsolutePath());
 }
 
-void Dir::goDel(QString dir)
+void Dir::goDelDir(QString dir)
 {
     DeleteDir *del = new DeleteDir(dir);
     del->run();
     del->wait();
     emit upDate(this->getAbsolutePath());
+}
+
+void Dir::goDelFile(QString file)
+{
+    DeleteFile *thr = new DeleteFile(file);
+    thr->run();
+    thr->wait();
+    emit upDate(this->absolutePath);
 }
