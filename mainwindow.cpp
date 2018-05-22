@@ -9,6 +9,10 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setMinimumWidth(1080);
     this->setMinimumHeight(720);
 
+    dirForCopy = new QString();
+    dirForCopy = NULL;
+    fileForCopy = new QString();
+    fileForCopy = NULL;
 
     mainLay = new QHBoxLayout();
     scroll = new QScrollArea();
@@ -30,12 +34,14 @@ MainWindow::MainWindow(QWidget *parent) :
     currentDir = root;
     for(int i=0; i < root->dirList->size(); i++){
         connect(root->dirList->at(i), SIGNAL(open(Dir*)), this, SLOT(setdir(Dir*)));
+        connect(root->dirList->at(i), SIGNAL(copy(QString)), this, SLOT(copyDir(QString)));
     }
     connect(root, SIGNAL(upDate(QString)), this, SLOT(update(QString)));
     scroll->setMinimumWidth(500);
     scroll->setWidget(root);
     connect(backButton, SIGNAL(clicked(bool)), this, SLOT(back()));
     connect(beginButton, SIGNAL(clicked(bool)), this, SLOT(toRoot()));
+    connect(pastButton, SIGNAL(clicked(bool)), this, SLOT(past()));
 }
 
 MainWindow::~MainWindow()
@@ -50,6 +56,7 @@ void MainWindow::setdir(Dir *dir)
     currentDir = dir;
     for(int i=0; i < currentDir->dirList->size(); i++){
         connect(currentDir->dirList->at(i), SIGNAL(open(Dir*)), this, SLOT(setdir(Dir*)));
+        connect(currentDir->dirList->at(i), SIGNAL(copy(QString)), this, SLOT(copyDir(QString)));
     }
     connect(currentDir, SIGNAL(upDate(QString)), this, SLOT(update(QString)));
 }
@@ -102,4 +109,21 @@ void MainWindow::toRoot()
     }
     connect(root, SIGNAL(upDate(QString)), this, SLOT(update(QString)));
     scroll->setWidget(root);
+}
+
+void MainWindow::copyDir(QString dir)
+{
+    fileForCopy = NULL;
+    dirForCopy = new QString(dir);
+}
+
+void MainWindow::past()
+{
+    if(dirForCopy != NULL){
+        CopyDir *thr;
+        thr = new CopyDir(*dirForCopy, currentDir->getAbsolutePath());
+        thr->run();
+        thr->wait();
+    }
+    update(currentDir->getAbsolutePath());
 }

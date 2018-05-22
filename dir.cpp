@@ -100,11 +100,9 @@ Dir::Dir(QString name, QString absolutePath, Dir *prev, QWidget *parent) : QWidg
     this->deleteButton = new QPushButton("Delete");
     this->outLay->addWidget(deleteButton);
 
-
-
     connect(openButton, SIGNAL(clicked(bool)), this, SLOT(pressOpen()));
     connect(deleteButton,SIGNAL(clicked(bool)), this, SLOT(pressDelete()));
-
+    connect(copyButton, SIGNAL(clicked(bool)), this, SLOT(pressCopy()));
 }
 
 void Dir::pressOpen()
@@ -116,6 +114,11 @@ void Dir::pressOpen()
 void Dir::pressDelete()
 {
     emit del(this->getAbsolutePath());
+}
+
+void Dir::pressCopy()
+{
+    emit copy(this->getAbsolutePath());
 }
 
 void Dir::goDelDir(QString dir)

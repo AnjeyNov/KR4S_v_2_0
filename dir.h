@@ -47,10 +47,12 @@ signals:
     void open(Dir*);
     void del(QString dir);
     void upDate(QString dir);
+    void copy(QString dir);
 
 public slots:
     void pressOpen();
     void pressDelete();
+    void pressCopy();
     void goDelDir(QString dir);
     void goDelFile(QString file);
 };

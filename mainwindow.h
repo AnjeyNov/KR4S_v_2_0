@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <dir.h>
 #include <QScrollArea>
+#include "copydir.h"
 
 namespace Ui {
 class MainWindow;
@@ -18,6 +19,8 @@ class MainWindow : public QMainWindow
     QHBoxLayout *mainLay;
     QVBoxLayout *leftLay;
     QScrollArea *scroll;
+    QString *dirForCopy;
+    QString *fileForCopy;
     Dir *root;
     Dir *currentDir;
 public:
@@ -29,6 +32,8 @@ public slots:
     void back();
     void update(QString dir);
     void toRoot();
+    void copyDir(QString dir);
+    void past();
 private:
     Ui::MainWindow *ui;
 };
