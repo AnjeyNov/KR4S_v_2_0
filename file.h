@@ -22,9 +22,11 @@ public:
 
 signals:
     void del(QString file);
+    void copy(QString name, QString file);
 
 public slots:
     void pressDel();
+    void pressCopy();
 };
 
 #endif // FILE_H

@@ -15,6 +15,11 @@ void File::pressDel()
     emit del(*absolutePath);
 }
 
+void File::pressCopy()
+{
+    emit copy(*name, *absolutePath);
+}
+
 File::File(QString name, QString absolutePath, QWidget *parent) : QWidget(parent)
 {
     this->name = new QString(name);
@@ -30,5 +35,6 @@ File::File(QString name, QString absolutePath, QWidget *parent) : QWidget(parent
     this->outLay->addWidget(deleteButton);
 
     connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(pressDel()));
+    connect(copyButton, SIGNAL(clicked(bool)), this, SLOT(pressCopy()));
 }
 

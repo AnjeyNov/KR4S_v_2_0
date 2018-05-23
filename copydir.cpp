@@ -1,13 +1,12 @@
 #include "copydir.h"
 
-CopyDir::CopyDir(QString f, QString t, QThread *parent)
+CopyDir::CopyDir(QString f, QString t, QThread *parent) : QThread(parent)
 {
     form = f;
     to = t;
 }
 
-int CopyDir::getFilesDirsLists(const QString &aRootDir, QStringList &aDirectories,
-                                QStringList &aFiles, bool aStripRoot) {
+int CopyDir::getFilesDirsLists(const QString &aRootDir, QStringList &aDirectories, QStringList &aFiles, bool aStripRoot) {
     QDir vDir(aRootDir);
 
     QString vPath = aRootDir;
@@ -25,36 +24,36 @@ int CopyDir::getFilesDirsLists(const QString &aRootDir, QStringList &aDirectorie
     vPaths.append(vPath);
 
     while (vLevel > -1) {
-    int i; bool vUp = false;
-    for (i=vIndex.at(vLevel); i < vDirs.at(vLevel).size(); i++) {
-        vPath = vPaths.at(vLevel)+vDirs.at(vLevel).at(i)+QLatin1String("/");
-        aDirectories.append(vPath);
-        // get files
-        QDir vLocDir(vPath);
-        QStringList vLocFiles = vLocDir.entryList(QDir::Files);
-        for (int j=0; j < vLocFiles.size();j++)
-            aFiles.append(vPath+vLocFiles.at(j));
-        //
+        int i; bool vUp = false;
+        for (i=vIndex.at(vLevel); i < vDirs.at(vLevel).size(); i++) {
+            vPath = vPaths.at(vLevel)+vDirs.at(vLevel).at(i)+QLatin1String("/");
+            aDirectories.append(vPath);
+            // get files
+            QDir vLocDir(vPath);
+            QStringList vLocFiles = vLocDir.entryList(QDir::Files);
+            for (int j=0; j < vLocFiles.size();j++)
+                aFiles.append(vPath+vLocFiles.at(j));
 
-        QStringList vNewList = vLocDir.entryList(QDir::AllDirs | QDir::Hidden | QDir::NoDotAndDotDot);
-        if (vNewList.size() > 0) {
-            vIndex[vLevel] = i+1;
-            vLevel++;
-            if (vLevel >= vDirs.size()) {
-                vDirs.append(vNewList);
-                vPaths.append(vPath);
-                vIndex.append(0);
-            } else {
-                vDirs[vLevel] = vNewList;
-                vPaths[vLevel] = vPath;
-                vIndex[vLevel] = 0;
+
+                QStringList vNewList = vLocDir.entryList(QDir::AllDirs | QDir::Hidden | QDir::NoDotAndDotDot);
+                if (vNewList.size() > 0) {
+                    vIndex[vLevel] = i+1;
+                    vLevel++;
+                    if (vLevel >= vDirs.size()) {
+                        vDirs.append(vNewList);
+                        vPaths.append(vPath);
+                        vIndex.append(0);
+                    } else {
+                        vDirs[vLevel] = vNewList;
+                        vPaths[vLevel] = vPath;
+                        vIndex[vLevel] = 0;
+                    }
+                    vUp = true;
+                    break;
+                }
             }
-            vUp = true;
-            break;
-            }
-        }
-        if (vUp) continue;
-        if (i >= vDirs.at(vLevel).size()) vLevel--;
+            if (vUp) continue;
+            if (i >= vDirs.at(vLevel).size()) vLevel--;
     }
 
     aDirectories.removeFirst();
@@ -64,7 +63,7 @@ int CopyDir::getFilesDirsLists(const QString &aRootDir, QStringList &aDirectorie
             aDirectories[i].replace(QDir::toNativeSeparators(QString("%1/").arg(aRootDir)), QLatin1String(""));
 
         for (int i=0; i < aFiles.size();i++)
-            aFiles[i].replace(QDir::toNativeSeparators(QString("%1/").arg(aRootDir)), QLatin1String(""));
+        aFiles[i].replace(QDir::toNativeSeparators(QString("%1/").arg(aRootDir)), QLatin1String(""));
     }
 
     return 0;

@@ -18,13 +18,15 @@ SOURCES += main.cpp\
     file.cpp \
     deletedir.cpp \
     deletefile.cpp \
-    copydir.cpp
+    copydir.cpp \
+    copyfile.cpp
 
 HEADERS  += mainwindow.h \
     dir.h \
     file.h \
     deletedir.h \
     deletefile.h \
-    copydir.h
+    copydir.h \
+    copyfile.h
 
 FORMS    += mainwindow.ui
