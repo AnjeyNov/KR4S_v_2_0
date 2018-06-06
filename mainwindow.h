@@ -6,6 +6,7 @@
 #include <QScrollArea>
 #include "copydir.h"
 #include "copyfile.h"
+#include "QErrorMessage"
 
 namespace Ui {
 class MainWindow;

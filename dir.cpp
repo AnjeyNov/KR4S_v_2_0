@@ -12,6 +12,7 @@ void Dir::setName(QString value)
 
 QString Dir::getAbsolutePath() const
 {
+
     return *absolutePath;
 }
 
@@ -123,16 +124,28 @@ void Dir::pressCopy()
 
 void Dir::goDelDir(QString dir)
 {
-    DeleteDir *del = new DeleteDir(dir);
-    del->run();
-    del->wait();
-    emit upDate(this->getAbsolutePath());
+    if(dir.contains("//home/anjey"))
+    {
+        DeleteDir *del = new DeleteDir(dir);
+        del->run();
+        del->wait();
+        emit upDate(this->getAbsolutePath());
+    } else {
+        (new QErrorMessage(this))->showMessage("Delete this fold is inmpossible");
+        return;
+    }
 }
 
 void Dir::goDelFile(QString file)
 {
-    DeleteFile *thr = new DeleteFile(file);
-    thr->run();
-    thr->wait();
-    emit upDate(this->getAbsolutePath());
+    if(file.contains("//home/anjey"))
+    {
+        DeleteFile *thr = new DeleteFile(file);
+        thr->run();
+        thr->wait();
+        emit upDate(this->getAbsolutePath());
+    } else {
+        (new QErrorMessage(this))->showMessage("Delete this file is inmpossible");
+        return;
+    }
 }

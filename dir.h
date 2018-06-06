@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include "deletedir.h"
 #include "deletefile.h"
+#include <QErrorMessage>
 
 
 class Dir : public QWidget

@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->setMinimumWidth(1080);
     this->setMinimumHeight(720);
-
+    this->setWindowTitle("File manager");
     dirForCopy = new QString();
     dirForCopy = NULL;
     fileForCopy = new QString();
@@ -20,10 +20,11 @@ MainWindow::MainWindow(QWidget *parent) :
     scroll = new QScrollArea();
     this->centralWidget()->setLayout(mainLay);
 
+
     leftLay = new QVBoxLayout();
     beginButton = new QPushButton("To root");
     backButton = new QPushButton("Back");
-    pastButton = new QPushButton("Past");
+    pastButton = new QPushButton("Paste");
     leftLay->addWidget(beginButton);
     leftLay->addWidget(backButton);
     leftLay->addWidget(pastButton);
@@ -71,6 +72,14 @@ void MainWindow::setdir(Dir *dir)
 
 void MainWindow::back()
 {
+    if(currentDir->getAbsolutePath() == "/"){
+        return;
+    }
+    if(currentDir->getPrev()->getAbsolutePath() == "/")
+    {
+        toRoot();
+        return;
+    }
     if(currentDir == root)
         return;
     currentDir->destroyIN();
@@ -135,16 +144,29 @@ void MainWindow::copyFile(QString file, QString AP)
 void MainWindow::past()
 {
     if(dirForCopy != NULL){
-        CopyDir *thr;
-        thr = new CopyDir(*dirForCopy, currentDir->getAbsolutePath());
-        thr->run();
-        thr->wait();
+        if(currentDir->getAbsolutePath().contains("//home"))
+        {
+            CopyDir *thr;
+            thr = new CopyDir(*dirForCopy, currentDir->getAbsolutePath());
+            thr->run();
+            thr->wait();
+        } else
+        {
+            (new QErrorMessage(this))->showMessage("Copy in this fold impossible");
+            return;
+        }
     }
     if(fileForCopy != NULL){
-        CopyFile *thr;
-        thr = new CopyFile(*fileAP, currentDir->getAbsolutePath() + "/" + (*fileForCopy));
-        thr->run();
-        thr->wait();
+        if(currentDir->getAbsolutePath().contains("//home"))
+        {
+            CopyFile *thr;
+            thr = new CopyFile(*fileAP, currentDir->getAbsolutePath() + "/" + (*fileForCopy));
+            thr->run();
+            thr->wait();
+        } else {
+            (new QErrorMessage(this))->showMessage("Копирование в данную директорию невозможно");
+            return;
+        }
     }
     update(currentDir->getAbsolutePath());
 }
